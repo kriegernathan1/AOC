@@ -10,63 +10,32 @@ var NEWLINE int = 10
 var PERIOD int = 46
 var STAR int = 42
 
-func isSymbol(data byte) bool {
-	return !isNumber(data) && data != byte(PERIOD)
-}
+func main() {
+	args := os.Args[1:] // don't include path
 
-func isGear(data byte) bool {
-	return data == byte(STAR)
-}
-
-func isNumber(data byte) bool {
-	return data >= 48 && data <= 57 // UTF8
-}
-
-func isValidIndicies(row int, col int, maxRow int, maxCol int) bool {
-	isNotNegative := row >= 0 && col >= 0
-	isNotOutOfRange := row <= maxRow && col < maxCol
-
-	return isNotNegative && isNotOutOfRange
-}
-
-func getNumberFromIndicesAndRemoveFromSourceArray(row int, col int, schematic [][]byte) int {
-	left := col
-	right := col
-	MIN_COL := 0
-	MAX_COL := len(schematic[row]) - 1
-	// find left side of number
-	for {
-		if left < MIN_COL || !isNumber(schematic[row][left]) {
-			left = left + 1
-			break
-		}
-		left--
+	if len(args) != 1 {
+		panic("Two many arguments. Only 1 argument (input path) is allowed")
 	}
 
-	// go right until you reach non-number OR end of row
-	for {
-		if right > MAX_COL || !isNumber(schematic[row][right]) {
-			break
-		}
-		right++
-	}
-
-	// create slice with left and right
-	numberByteArr := schematic[row][left:right]
-
-	// convert to int
-	number, err := strconv.Atoi(string(numberByteArr))
+	path := args[0]
+	data, err := os.ReadFile(path)
 	if err != nil {
-		panic("Error converting string to int" + err.Error())
+		panic("unable to open input file.")
 	}
 
-	// remove number from source array
-	for left < right && left < len(schematic[row]) {
-		schematic[row][left] = byte(PERIOD)
-		left++
+	schematic := [][]byte{}
+
+	left := 0
+	for right := 0; right < len(data); right++ {
+		if data[right] == byte(NEWLINE) || right+1 == len(data) {
+			schematic = append(schematic, data[left:right])
+			left = right + 1
+		}
 	}
 
-	return number
+	// Note: Only will be correct if run with one commented; Both mutate the schematic array.
+	// part1(schematic)
+	part2(schematic)
 }
 
 func part1(schematic [][]byte) {
@@ -148,30 +117,62 @@ func part2(schematic [][]byte) {
 	fmt.Println(sum)
 }
 
-func main() {
-	args := os.Args[1:] // don't include path
+func isSymbol(data byte) bool {
+	return !isNumber(data) && data != byte(PERIOD)
+}
 
-	if len(args) != 1 {
-		panic("Two many arguments. Only 1 argument (input path) is allowed")
-	}
+func isGear(data byte) bool {
+	return data == byte(STAR)
+}
 
-	path := args[0]
-	data, err := os.ReadFile(path)
-	if err != nil {
-		panic("unable to open input file.")
-	}
+func isNumber(data byte) bool {
+	return data >= 48 && data <= 57 // UTF8
+}
 
-	schematic := [][]byte{}
+func isValidIndicies(row int, col int, maxRow int, maxCol int) bool {
+	isNotNegative := row >= 0 && col >= 0
+	isNotOutOfRange := row <= maxRow && col < maxCol
 
-	left := 0
-	for right := 0; right < len(data); right++ {
-		if data[right] == byte(NEWLINE) || right+1 == len(data) {
-			schematic = append(schematic, data[left:right])
-			left = right + 1
+	return isNotNegative && isNotOutOfRange
+}
+
+func getNumberFromIndicesAndRemoveFromSourceArray(row int, col int, schematic [][]byte) int {
+	left := col
+	right := col
+	MIN_COL := 0
+	MAX_COL := len(schematic[row]) - 1
+
+	// find left side of number
+	for {
+		if left < MIN_COL || !isNumber(schematic[row][left]) {
+			left = left + 1
+			break
 		}
+		left--
 	}
 
-	// Note: Only will be correct if run with one commented; Both mutate the schematic array.
-	// part1(schematic)
-	part2(schematic)
+	// go right until you reach non-number OR end of row
+	for {
+		if right > MAX_COL || !isNumber(schematic[row][right]) {
+			break
+		}
+		right++
+	}
+
+	// create slice with left and right
+	numberByteArr := schematic[row][left:right]
+
+	// convert to int
+	number, err := strconv.Atoi(string(numberByteArr))
+	if err != nil {
+		panic("Error converting string to int" + err.Error())
+	}
+
+	// remove number from source array
+	for left < right && left < len(schematic[row]) {
+		schematic[row][left] = byte(PERIOD)
+		left++
+	}
+
+	return number
 }
