@@ -172,7 +172,6 @@ func main() {
 	}
 
 	// Note: Only will be correct if run with one commented; Both mutate the schematic array.
-	// TODO: copy array
 	// part1(schematic)
 	part2(schematic)
 }
