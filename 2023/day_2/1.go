@@ -12,10 +12,77 @@ var DELIMETER int = 59 // semi-colon
 var COMMA int = 44
 var SPACE int = 32
 var SEMICOLON int = 59
+var MAX_COLOR_MAP = make(map[string]int)
+var colors = []string{"red", "green", "blue"}
 
 type game struct {
 	ID        int
 	handsfuls []map[string]int
+}
+
+func main() {
+	solvePartOne()
+	solvePartTwo()
+}
+
+func solvePartOne() {
+	MAX_COLOR_MAP["red"] = 12
+	MAX_COLOR_MAP["green"] = 13
+	MAX_COLOR_MAP["blue"] = 14
+
+	games := parseGameInput()
+	possibleGames := []game{}
+
+	for i := 0; i < len(games); i++ {
+		if isGamePossible(games[i]) {
+			possibleGames = append(possibleGames, games[i])
+		}
+	}
+
+	sum := 0
+	for i := 0; i < len(possibleGames); i++ {
+		sum += possibleGames[i].ID
+	}
+
+	fmt.Printf("part 1 answer: %v\n", sum) // 2285
+}
+
+func solvePartTwo() {
+	games := parseGameInput()
+
+	sum := 0
+	for i := 0; i < len(games); i++ {
+		sum += getPowerOfCubeSet(games[i])
+	}
+
+	fmt.Printf("part 2 answer: %v\n", sum) // 77021
+}
+
+func getPowerOfCubeSet(g game) int {
+	gameMaxColorMap := make(map[string]int)
+
+	for i := 0; i < len(colors); i++ {
+		gameMaxColorMap[colors[i]] = 0
+	}
+
+	for i := 0; i < len(g.handsfuls); i++ {
+		for j := 0; j < len(colors); j++ {
+			handful := g.handsfuls[i]
+			color := colors[j]
+
+			// handle each color
+			if handful[color] > gameMaxColorMap[color] {
+				gameMaxColorMap[color] = handful[color]
+			}
+		}
+	}
+
+	power := 1
+	for i := 0; i < len(colors); i++ {
+		power *= gameMaxColorMap[colors[i]]
+	}
+
+	return power
 }
 
 // # color, # color, # color[;][<newline>]
@@ -111,9 +178,6 @@ func parseGameInput() []game {
 	return games
 }
 
-var MAX_COLOR_MAP = make(map[string]int)
-var colors = []string{"red", "green", "blue"}
-
 func isGamePossible(g game) bool {
 	gameMaxColorMap := make(map[string]int)
 
@@ -143,69 +207,4 @@ func isGamePossible(g game) bool {
 	}
 
 	return true
-}
-
-func solvePartOne() {
-	MAX_COLOR_MAP["red"] = 12
-	MAX_COLOR_MAP["green"] = 13
-	MAX_COLOR_MAP["blue"] = 14
-
-	games := parseGameInput()
-	possibleGames := []game{}
-
-	for i := 0; i < len(games); i++ {
-		if isGamePossible(games[i]) {
-			possibleGames = append(possibleGames, games[i])
-		}
-	}
-
-	sum := 0
-	for i := 0; i < len(possibleGames); i++ {
-		sum += possibleGames[i].ID
-	}
-
-	fmt.Printf("part 1 answer: %v\n", sum) // 2285
-}
-
-func getPowerOfCubeSet(g game) int {
-	gameMaxColorMap := make(map[string]int)
-
-	for i := 0; i < len(colors); i++ {
-		gameMaxColorMap[colors[i]] = 0
-	}
-
-	for i := 0; i < len(g.handsfuls); i++ {
-		for j := 0; j < len(colors); j++ {
-			handful := g.handsfuls[i]
-			color := colors[j]
-
-			// handle each color
-			if handful[color] > gameMaxColorMap[color] {
-				gameMaxColorMap[color] = handful[color]
-			}
-		}
-	}
-
-	power := 1
-	for i := 0; i < len(colors); i++ {
-		power *= gameMaxColorMap[colors[i]]
-	}
-
-	return power
-}
-
-func solvePartTwo() {
-	games := parseGameInput()
-
-	sum := 0
-	for i := 0; i < len(games); i++ {
-		sum += getPowerOfCubeSet(games[i])
-	}
-
-	fmt.Printf("part 2 answer: %v\n", sum)
-}
-
-func main() {
-	solvePartOne()
-	solvePartTwo()
 }
