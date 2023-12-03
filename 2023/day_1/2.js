@@ -82,3 +82,11 @@ fs.open("./1.txt", "r", (_, fd) => {
     console.log(sum);
   });
 });
+
+/**
+ * N = lines of input
+ * K_i = length of input of line i
+ * Time Complexity = O(N*K_i)
+ * Space complexity = O(N)
+ *
+ */
