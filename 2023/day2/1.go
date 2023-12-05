@@ -1,4 +1,4 @@
-package main
+package day2
 
 import (
 	"fmt"
@@ -6,7 +6,6 @@ import (
 	"strconv"
 )
 
-var INPUT_FILE string = "./input_1.txt"
 var NEWLINE int = 10
 var DELIMETER int = 59 // semi-colon
 var COMMA int = 44
@@ -20,17 +19,17 @@ type game struct {
 	handsfuls []map[string]int
 }
 
-func main() {
-	solvePartOne()
-	solvePartTwo()
+func Day2(inputFile string) {
+	solvePartOne(inputFile)
+	solvePartTwo(inputFile)
 }
 
-func solvePartOne() {
+func solvePartOne(inputFile string) {
 	MAX_COLOR_MAP["red"] = 12
 	MAX_COLOR_MAP["green"] = 13
 	MAX_COLOR_MAP["blue"] = 14
 
-	games := parseGameInput()
+	games := parseGameInput(inputFile)
 	possibleGames := []game{}
 
 	for i := 0; i < len(games); i++ {
@@ -47,8 +46,8 @@ func solvePartOne() {
 	fmt.Printf("part 1 answer: %v\n", sum) // 2285
 }
 
-func solvePartTwo() {
-	games := parseGameInput()
+func solvePartTwo(inputFile string) {
+	games := parseGameInput(inputFile)
 
 	sum := 0
 	for i := 0; i < len(games); i++ {
@@ -160,8 +159,8 @@ func parseGame(_game []byte) game {
 	return parsedGame
 }
 
-func parseGameInput() []game {
-	data, err := os.ReadFile(INPUT_FILE)
+func parseGameInput(inputFile string) []game {
+	data, err := os.ReadFile(inputFile)
 	if err != nil {
 		panic(err)
 	}

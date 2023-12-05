@@ -1,4 +1,4 @@
-package main
+package day3
 
 import (
 	"fmt"
@@ -10,15 +10,8 @@ var NEWLINE int = 10
 var PERIOD int = 46
 var STAR int = 42
 
-func main() {
-	args := os.Args[1:] // don't include path
-
-	if len(args) != 1 {
-		panic("Two many arguments. Only 1 argument (input path) is allowed")
-	}
-
-	path := args[0]
-	data, err := os.ReadFile(path)
+func Day3(inputPath string) {
+	data, err := os.ReadFile(inputPath)
 	if err != nil {
 		panic("unable to open input file.")
 	}
