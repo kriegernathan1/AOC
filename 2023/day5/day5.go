@@ -43,7 +43,6 @@ func getSeeds(line string) []string {
 }
 
 func day5Part1(inputPath string) {
-	fmt.Println(time.Now())
 	fd, error := os.Open(inputPath)
 	check(error)
 	defer fd.Close()
@@ -92,7 +91,6 @@ func day5Part1(inputPath string) {
 				}
 
 				if valueToBeMapped >= srcRangeStart && valueToBeMapped < srcRangeStart+range_ {
-					// mark as negative to denote processed
 					intermediateValues[j] = strconv.Itoa(dstRangeStart + (valueToBeMapped - srcRangeStart))
 					processedIndicies[j] = true
 				}
@@ -110,7 +108,6 @@ func day5Part1(inputPath string) {
 	}
 
 	fmt.Printf("Part 1: %v\n", location)
-	fmt.Println(time.Now())
 }
 
 func day5Part2(inputPath string) {
@@ -193,8 +190,9 @@ func day5Part2(inputPath string) {
 }
 
 func Day5(inputPath string) {
-	// day5Part1(inputPath)
+	day5Part1(inputPath)
+	start := time.Now()
 	day5Part2(inputPath)
+	elapsed := time.Since(start)
+	fmt.Printf("Part 2 took %v\n", elapsed)
 }
-
-//
