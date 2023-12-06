@@ -5,6 +5,7 @@ import (
 	"aoc/day3"
 	"aoc/day4"
 	"aoc/day5"
+	"aoc/day6"
 	"fmt"
 	"os"
 )
@@ -14,6 +15,7 @@ var days = map[string]func(path string){
 	"3": day3.Day3,
 	"4": day4.Day4,
 	"5": day5.Day5,
+	"6": day6.Day6,
 }
 
 func main() {
