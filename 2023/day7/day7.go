@@ -52,6 +52,8 @@ var cardToValue = map[byte]int{
 	'2': 1,
 }
 
+var part = 1
+
 var wildCard byte = 'J'
 
 func getHandFromLine(line string) hand {
@@ -91,7 +93,39 @@ func getHandStrength(h hand) int {
 		return frequencies[i] > frequencies[j]
 	})
 
-	return cardFreqToHandStrength[frequencies]
+	if part == 2 {
+		if cardFreq[wildCard] > 0 {
+			isWildCardHighestFreq := cardFreq[wildCard] == frequencies[0]
+			targetToRemove := cardFreq[wildCard]
+
+			if isWildCardHighestFreq && frequencies[0] == frequencies[1] {
+				frequencies[0] += cardFreq[wildCard]
+			} else if isWildCardHighestFreq {
+				secondHighestFreq := frequencies[1]
+				frequencies[0] += secondHighestFreq
+				targetToRemove = secondHighestFreq
+			} else {
+				frequencies[0] += cardFreq[wildCard]
+			}
+
+			for i := 0; i < len(frequencies); i++ {
+				if frequencies[i] == targetToRemove {
+					frequencies[i] = 0
+					break
+				}
+			}
+		}
+		sort.Slice(frequencies[:], func(i, j int) bool {
+			return frequencies[i] > frequencies[j]
+		})
+	}
+
+	strength := cardFreqToHandStrength[frequencies]
+	if strength == 0 {
+		fmt.Println("Impossible card frequencies", frequencies, h.cards)
+	}
+
+	return strength
 }
 
 // if h1 < h2
@@ -120,23 +154,34 @@ func compareHands(h1 hand, h2 hand) bool {
 	return false
 }
 
-func Day7(inputPath string) {
-	scanner := util.GetScanner(inputPath)
-
-	hands := []hand{}
-	for scanner.Scan() {
-		hands = append(hands, getHandFromLine(scanner.Text()))
+func day7(inputPath string) {
+	if part == 2 {
+		cardToValue[wildCard] = 0
 	}
 
-	sort.Slice(hands, func(i, j int) bool {
-		// return if i should be before j?
-		return compareHands(hands[i], hands[j])
+	scanner := util.GetScanner(inputPath)
+
+	h := []hand{}
+	for scanner.Scan() {
+		h = append(h, getHandFromLine(scanner.Text()))
+	}
+
+	sort.Slice(h, func(i, j int) bool {
+		return compareHands(h[i], h[j])
 	})
 
 	totalWinnings := 0
-	for rank, hand := range hands {
+	for rank, hand := range h {
 		totalWinnings += hand.bet * (rank + 1)
 	}
 
-	fmt.Println(totalWinnings)
+	fmt.Printf("Part %v: %v\n", part, totalWinnings)
+}
+
+func Day7(inputPath string) {
+	part = 1
+	day7(inputPath)
+
+	part = 2
+	day7(inputPath)
 }
