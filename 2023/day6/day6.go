@@ -1,18 +1,13 @@
 package day6
 
 import (
+	"aoc/util"
 	"bufio"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
 )
-
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
 
 func getTimeOrDistance(line string, part int) []int {
 	if part == 1 {
@@ -37,7 +32,7 @@ func canWinWithPressOfLength(length int, totalTime int, neededDistance int) bool
 
 func day6(inputPath string, part int) {
 	fd, err := os.Open(inputPath)
-	check(err)
+	util.Check(err)
 
 	scanner := bufio.NewScanner(fd)
 	timeAndDistances := make([][]int, 2)

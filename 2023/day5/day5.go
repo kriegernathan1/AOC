@@ -1,6 +1,7 @@
 package day5
 
 import (
+	"aoc/util"
 	"bufio"
 	"fmt"
 	"math"
@@ -9,12 +10,6 @@ import (
 	"strings"
 	"time"
 )
-
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
 
 type seedBounds struct {
 	lower int
@@ -27,10 +22,10 @@ func getSeedBounds(line string) []seedBounds {
 	seedInfo := strings.Fields(strings.Split(line, ":")[1])
 	for i := 0; i < len(seedInfo); i += 2 {
 		rangeStart, err := strconv.Atoi(seedInfo[i])
-		check(err)
+		util.Check(err)
 
 		range_, err := strconv.Atoi(seedInfo[i+1])
-		check(err)
+		util.Check(err)
 
 		bounds = append(bounds, seedBounds{lower: rangeStart, upper: rangeStart + range_})
 	}
@@ -44,7 +39,7 @@ func getSeeds(line string) []string {
 
 func day5Part1(inputPath string) {
 	fd, error := os.Open(inputPath)
-	check(error)
+	util.Check(error)
 	defer fd.Close()
 
 	scanner := bufio.NewScanner(fd)
@@ -74,17 +69,17 @@ func day5Part1(inputPath string) {
 		for i := 0; i < len(mapValues); i += 3 {
 			// map values
 			dstRangeStart, err := strconv.Atoi(mapValues[i])
-			check(err)
+			util.Check(err)
 
 			srcRangeStart, err := strconv.Atoi(mapValues[i+1])
-			check(err)
+			util.Check(err)
 
 			range_, err := strconv.Atoi(mapValues[i+2])
-			check(err)
+			util.Check(err)
 
 			for j := 0; j < len(intermediateValues); j++ {
 				valueToBeMapped, err := strconv.Atoi(intermediateValues[j])
-				check(err)
+				util.Check(err)
 
 				if processedIndicies[j] {
 					continue
@@ -112,7 +107,7 @@ func day5Part1(inputPath string) {
 
 func day5Part2(inputPath string) {
 	fd, error := os.Open(inputPath)
-	check(error)
+	util.Check(error)
 	defer fd.Close()
 
 	scanner := bufio.NewScanner(fd)
