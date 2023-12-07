@@ -2,9 +2,7 @@ package day6
 
 import (
 	"aoc/util"
-	"bufio"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 )
@@ -31,10 +29,7 @@ func canWinWithPressOfLength(length int, totalTime int, neededDistance int) bool
 }
 
 func day6(inputPath string, part int) {
-	fd, err := os.Open(inputPath)
-	util.Check(err)
-
-	scanner := bufio.NewScanner(fd)
+	scanner := util.GetScanner(inputPath)
 	timeAndDistances := make([][]int, 2)
 
 	for i := 0; scanner.Scan(); i++ {

@@ -5,7 +5,6 @@ import (
 	"bufio"
 	"fmt"
 	"math"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -37,12 +36,7 @@ func getSeeds(line string) []string {
 	return strings.Fields(strings.Split(line, ":")[1])
 }
 
-func day5Part1(inputPath string) {
-	fd, error := os.Open(inputPath)
-	util.Check(error)
-	defer fd.Close()
-
-	scanner := bufio.NewScanner(fd)
+func day5Part1(inputPath string, scanner *bufio.Scanner) {
 	scanner.Scan()
 	intermediateValues := getSeeds(string(scanner.Text()))
 
@@ -105,12 +99,7 @@ func day5Part1(inputPath string) {
 	fmt.Printf("Part 1: %v\n", location)
 }
 
-func day5Part2(inputPath string) {
-	fd, error := os.Open(inputPath)
-	util.Check(error)
-	defer fd.Close()
-
-	scanner := bufio.NewScanner(fd)
+func day5Part2(inputPath string, scanner *bufio.Scanner) {
 	scanner.Scan()
 	bounds := getSeedBounds(string(scanner.Text()))
 
@@ -185,9 +174,10 @@ func day5Part2(inputPath string) {
 }
 
 func Day5(inputPath string) {
-	day5Part1(inputPath)
+	day5Part1(inputPath, util.GetScanner(inputPath))
+
 	start := time.Now()
-	day5Part2(inputPath)
+	day5Part2(inputPath, util.GetScanner(inputPath))
 	elapsed := time.Since(start)
 	fmt.Printf("Part 2 took %v\n", elapsed)
 }
