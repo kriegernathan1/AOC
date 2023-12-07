@@ -108,6 +108,7 @@ func getHandStrength(h hand) int {
 				frequencies[0] += cardFreq[wildCard]
 			}
 
+			// remove wild card freq as it has been used
 			for i := 0; i < len(frequencies); i++ {
 				if frequencies[i] == targetToRemove {
 					frequencies[i] = 0
