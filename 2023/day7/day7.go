@@ -11,9 +11,21 @@ import (
 type hand struct {
 	cards    string
 	bet      int
-	strength int
+	strength handType
 	rank     int
 }
+
+type handType int
+
+const (
+	fiveOfAKind  handType = 7
+	fourOfAKind  handType = 6
+	fullHouse    handType = 5
+	threeOfAKind handType = 4
+	twoPair      handType = 3
+	onePair      handType = 2
+	highCard     handType = 1
+)
 
 /*
 Five of a kind: [5 0 0 0 0] => 7
@@ -24,14 +36,14 @@ Two Pair: [2 2 1 0 0] => 3
 One Pair: [2 1 1 1 0] => 2
 High card: [1 1 1 1 1] => 1
 */
-var cardFreqToHandStrength = map[[5]int]int{
-	{5, 0, 0, 0, 0}: 7,
-	{4, 1, 0, 0, 0}: 6,
-	{3, 2, 0, 0, 0}: 5,
-	{3, 1, 1, 0, 0}: 4,
-	{2, 2, 1, 0, 0}: 3,
-	{2, 1, 1, 1, 0}: 2,
-	{1, 1, 1, 1, 1}: 1,
+var cardFreqToHandStrength = map[[5]int]handType{
+	{5, 0, 0, 0, 0}: fiveOfAKind,
+	{4, 1, 0, 0, 0}: fourOfAKind,
+	{3, 2, 0, 0, 0}: fullHouse,
+	{3, 1, 1, 0, 0}: threeOfAKind,
+	{2, 2, 1, 0, 0}: twoPair,
+	{2, 1, 1, 1, 0}: onePair,
+	{1, 1, 1, 1, 1}: highCard,
 }
 
 // 65 75 81 74 84 57 56 55 54 53 52 51 50
@@ -68,7 +80,7 @@ func getHandFromLine(line string) hand {
 	return h
 }
 
-func getHandStrength(h hand) int {
+func getHandStrength(h hand) handType {
 	cardFreq := make(map[byte]int)
 
 	for i := 0; i < len(h.cards); i++ {
