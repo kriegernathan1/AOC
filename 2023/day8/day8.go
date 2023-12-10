@@ -11,9 +11,70 @@ type Node struct {
 	adjacentNodes map[string]string // L and R are keys
 }
 
+func getNumStepsFromStartingPoint(instructions []string, nodeMap map[string]Node, startingNode Node) int {
+	currentNode := startingNode
+	numSteps := 0
+	for {
+		currentInstruction := instructions[numSteps%len(instructions)]
+		nextNode := nodeMap[currentNode.adjacentNodes[currentInstruction]]
+
+		currentNode = nextNode
+
+		numSteps++
+
+		if nextNode.identifier == endingPoint {
+			break
+		}
+	}
+
+	return numSteps
+}
+
+func part1(instructions []string, nodeMap map[string]Node) {
+	fmt.Println(getNumStepsFromStartingPoint(instructions, nodeMap, nodeMap[startingPoint]))
+}
+
+func part2(instructions []string, nodeMap map[string]Node) {
+	const targetNodeEndingLetter = 'Z'
+	const targetStartLetter = 'A'
+	currentNodes := []Node{}
+
+	for k, v := range nodeMap {
+		if k[2] == targetStartLetter {
+			currentNodes = append(currentNodes, v)
+		}
+	}
+
+	numSteps := 0
+	for {
+		currentInstruction := instructions[numSteps%len(instructions)]
+
+		for i := range currentNodes {
+			currentNodes[i] = nodeMap[currentNodes[i].adjacentNodes[currentInstruction]]
+		}
+
+		allEndInTarget := true
+		for i := range currentNodes {
+			if currentNodes[i].identifier[2] == targetNodeEndingLetter {
+				continue
+			}
+			allEndInTarget = false
+		}
+
+		numSteps++
+		if allEndInTarget {
+			break
+		}
+
+	}
+
+	fmt.Println(numSteps)
+}
+
+const startingPoint = "AAA"
+const endingPoint = "ZZZ"
+
 func Day8(inputPath string) {
-	const startingPoint = "AAA"
-	const endingPoint = "ZZZ"
 
 	nodeMap := make(map[string]Node)
 	scanner := util.GetScanner(inputPath)
@@ -32,20 +93,7 @@ func Day8(inputPath string) {
 		nodeMap[identifier] = Node{identifier: identifier, adjacentNodes: map[string]string{"L": adjacentNodes[0], "R": adjacentNodes[1]}}
 	}
 
-	currentNode := nodeMap[startingPoint]
-	numSteps := 0
-	for {
-		currentInstruction := instructions[numSteps%len(instructions)]
-		nextNode := nodeMap[currentNode.adjacentNodes[currentInstruction]]
+	part1(instructions, nodeMap)
+	// part2(instructions, nodeMap)
 
-		currentNode = nextNode
-
-		numSteps++
-
-		if nextNode.identifier == endingPoint {
-			break
-		}
-	}
-
-	fmt.Println(numSteps)
 }
