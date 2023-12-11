@@ -11,7 +11,7 @@ type Node struct {
 	adjacentNodes map[string]string // L and R are keys
 }
 
-func getNumStepsFromStartingPoint(instructions []string, nodeMap map[string]Node, startingNode Node, whenToBreak func(n Node) bool) int {
+func getNumStepsFromStartingPoint(instructions []string, nodeMap map[string]Node, startingNode Node, shouldBreak func(n Node) bool) int {
 	currentNode := startingNode
 	numSteps := 0
 	for {
@@ -22,7 +22,7 @@ func getNumStepsFromStartingPoint(instructions []string, nodeMap map[string]Node
 
 		numSteps++
 
-		if whenToBreak(nextNode) {
+		if shouldBreak(nextNode) {
 			break
 		}
 	}
