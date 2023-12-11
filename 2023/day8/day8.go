@@ -11,6 +11,27 @@ type Node struct {
 	adjacentNodes map[string]string // L and R are keys
 }
 
+// greatest common divisor (GCD) via Euclidean algorithm
+func GCD(a, b int) int {
+	for b != 0 {
+		t := b
+		b = a % b
+		a = t
+	}
+	return a
+}
+
+// find Least Common Multiple (LCM) via GCD
+func LCM(a, b int, integers ...int) int {
+	result := a * b / GCD(a, b)
+
+	for i := 0; i < len(integers); i++ {
+		result = LCM(result, integers[i])
+	}
+
+	return result
+}
+
 func getNumStepsFromStartingPoint(instructions []string, nodeMap map[string]Node, startingNode Node, shouldBreak func(n Node) bool) int {
 	currentNode := startingNode
 	numSteps := 0
@@ -47,30 +68,16 @@ func part2(instructions []string, nodeMap map[string]Node) {
 		}
 	}
 
-	numSteps := 0
-	for {
-		currentInstruction := instructions[numSteps%len(instructions)]
+	pathLengths := []int{}
+	for _, v := range currentNodes {
+		length := getNumStepsFromStartingPoint(instructions, nodeMap, v, func(n Node) bool {
+			return n.identifier[2] == targetNodeEndingLetter
+		})
 
-		for i := range currentNodes {
-			currentNodes[i] = nodeMap[currentNodes[i].adjacentNodes[currentInstruction]]
-		}
-
-		allEndInTarget := true
-		for i := range currentNodes {
-			if currentNodes[i].identifier[2] == targetNodeEndingLetter {
-				continue
-			}
-			allEndInTarget = false
-		}
-
-		numSteps++
-		if allEndInTarget {
-			break
-		}
-
+		pathLengths = append(pathLengths, length)
 	}
 
-	fmt.Println(numSteps)
+	fmt.Println(LCM(pathLengths[0], pathLengths[1], pathLengths[2:]...))
 }
 
 const startingPoint = "AAA"
@@ -96,6 +103,6 @@ func Day8(inputPath string) {
 	}
 
 	part1(instructions, nodeMap)
-	// part2(instructions, nodeMap)
+	part2(instructions, nodeMap)
 
 }
